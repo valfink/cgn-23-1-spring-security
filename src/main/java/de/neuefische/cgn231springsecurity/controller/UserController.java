@@ -1,7 +1,9 @@
 package de.neuefische.cgn231springsecurity.controller;
 
-import de.neuefische.cgn231springsecurity.model.MongoUser;
+import de.neuefische.cgn231springsecurity.model.MongoUserRequest;
+import de.neuefische.cgn231springsecurity.model.MongoUserResponse;
 import de.neuefische.cgn231springsecurity.repository.MongoUserRepository;
+import de.neuefische.cgn231springsecurity.service.MongoUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,11 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/users")
 public class UserController {
     private final MongoUserRepository mongoUserRepository;
+    private final MongoUserDetailsService mongoUserDetailsService;
 
     @PostMapping
-    public MongoUser postUser(@RequestBody MongoUser mongoUser) {
-        return mongoUserRepository.save(mongoUser);
+    public MongoUserResponse signup(@RequestBody MongoUserRequest mongoUser) {
+        return mongoUserDetailsService.signup(mongoUser);
     }
 
     @GetMapping("/me")
