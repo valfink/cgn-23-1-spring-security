@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/secret")
-public class MyController {
+public class SecretController {
     @GetMapping
     public String secretEndpoint() {
         return "THIS IS TOTALLY SECRET!";
