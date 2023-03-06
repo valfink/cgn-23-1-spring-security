@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +23,10 @@ public class UserController {
     @GetMapping("/me")
     public String getMe(Principal principal) {
         if (principal != null) {
-            return principal.getName();
+            return principal.getName() +
+                    mongoUserRepository.findByUsername(principal.getName())
+                            .orElseThrow(NoSuchElementException::new)
+                            .toString();
         }
         return "Anonymous user!";
     }

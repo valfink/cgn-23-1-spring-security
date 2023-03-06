@@ -11,4 +11,9 @@ public class SecretController {
     public String secretEndpoint() {
         return "THIS IS TOTALLY SECRET!";
     }
+
+    @GetMapping("/admin")
+    public String adminEndpoint() {
+        return "Wow, you are an ADMIN!?!?";
+    }
 }
