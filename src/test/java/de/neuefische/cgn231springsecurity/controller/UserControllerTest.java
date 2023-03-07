@@ -46,4 +46,19 @@ class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/me"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser(username = "user", password = "123")
+    void postUser_whenNoToken_then403() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                "username": "user",
+                                "password": "123"
+                                }
+                                """))
+                .andExpect(status().isForbidden());
+    }
 }
