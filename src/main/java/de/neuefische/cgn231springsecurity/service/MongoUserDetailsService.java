@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -33,6 +34,16 @@ public class MongoUserDetailsService implements UserDetailsService {
                 mongoUser.username(),
                 mongoUser.password(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + mongoUser.role()))
+        );
+    }
+
+    public MongoUserResponse getMe(Principal principal) {
+        MongoUser user = mongoUserRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        return new MongoUserResponse(
+                user.id(),
+                user.username(),
+                user.role()
         );
     }
 
