@@ -32,7 +32,7 @@ class UserControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser(username = "user", password = "123")
-    void getMe_whenRegisterd_then200() throws Exception {
+    void getMe_whenRegisterd_thenReturnDTO() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -44,7 +44,13 @@ class UserControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/me"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                        "username": "user",
+                        "role": "BASIC"
+                        }
+                                                """));
     }
 
     @Test
