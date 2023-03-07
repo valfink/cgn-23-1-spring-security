@@ -3,6 +3,7 @@ package de.neuefische.cgn231springsecurity.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,9 +31,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(requestHandler))
-                .httpBasic().and()
+                .httpBasic()
+                .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+                .and()
                 .sessionManagement(config ->
-                        config.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))                .authorizeHttpRequests()
+                        config.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/csrf").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/status").permitAll()
@@ -40,8 +44,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/secret/admin").hasRole("ADMIN")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
-                .and()
-                .formLogin()
                 .and().build();
     }
 
