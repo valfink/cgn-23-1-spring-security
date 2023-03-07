@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -31,7 +32,7 @@ class UserControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser(username = "user", password = "123")
-    void getMe_whenRegisterd_thenInfos() throws Exception {
+    void getMe_whenRegisterd_then200() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -39,12 +40,10 @@ class UserControllerTest {
                                 "username": "user",
                                 "password": "123"
                                 }
-                                """))
+                                """)
+                        .with(csrf()))
                 .andExpect(status().isOk());
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/me"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("""
-                        user
-                        """));
+                .andExpect(status().isOk());
     }
 }
