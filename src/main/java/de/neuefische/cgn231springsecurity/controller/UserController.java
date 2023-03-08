@@ -25,6 +25,11 @@ public class UserController {
         return getMe(principal);
     }
 
+    @PostMapping("/logout")
+    public void logout() {
+        // doesn't need to do anythin, see FilterChainπ
+    }
+
     @GetMapping("/me")
     public MongoUserResponse getMe(Principal principal) {
         return mongoUserDetailsService.getMe(principal);
